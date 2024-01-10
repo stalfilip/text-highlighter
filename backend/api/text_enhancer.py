@@ -27,7 +27,7 @@ class openAi:
 
 
 class highlightExtractor(openAi):
-    def __init__(self, model="gpt-3.5-turbo", temperature=0.5, top_p=1):
+    def __init__(self, model="gpt-4-1106-preview", temperature=0.0, top_p=1):
         super().__init__(model, temperature, top_p)
 
     def fetch_instructions(self):
@@ -41,6 +41,7 @@ class highlightExtractor(openAi):
     def extract_highlights(self, text):
         self.add_message("user", text)
         self.add_message("system", self.fetch_instructions())
+        self.add_message("system", "It's crucial that you cite the text exactly.")
         self.create_response()
         if self.response is None:
             raise Exception("No response available. Please create a response first.")

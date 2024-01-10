@@ -1,4 +1,4 @@
-from ..api.utils.utils import parse_csv
+from ..api.utils.utils import parse_csv, highlight_quotes
 
 def test_parse_content():
     # Test with normal input
@@ -24,3 +24,7 @@ def test_parse_content():
     expected_output = ['']
     result = parse_csv(content)
     assert result == expected_output, f"Expected {expected_output}, but got {result}"
+
+
+def test_highlight_quotes():
+    

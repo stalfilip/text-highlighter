@@ -1,26 +1,29 @@
-from Settings import initialize_settings
+from flask import Flask, request, jsonify
 from text_enhancer import highlightExtractor
+from utils.utils import highlight_quotes
+from Settings import initialize_settings
 
+app = Flask(__name__)
 settings = initialize_settings()
 
-
-def main():
+def run_highlighting(text):
     extractor = highlightExtractor()
     extractor.add_message(
         "system",
         "You will be provided with a block of text, and your task is to extract a list of keywords from it.",
     )
-    text = read_file()
     extractor.add_message("user", text)
     sentences = extractor.extract_highlights(text)
-    print(sentences)
+    print(f"nr of sentences: {len(sentences)}")
+    highlighted_text = highlight_quotes(text, sentences)
+    return highlighted_text
 
-
-def read_file():
-    with open("api/lib/reuters.txt", "r") as file:
-        text = file.read()
-    return text
-
+@app.route('/ingest', methods=['POST'])
+def ingest():
+    data = request.json
+    text = data['text']
+    result = run_highlighting(text)
+    return jsonify({"text": result})
 
 if __name__ == "__main__":
-    main()
+    app.run(host='0.0.0.0', port=5000)
