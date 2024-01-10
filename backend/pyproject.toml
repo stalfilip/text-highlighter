@@ -11,11 +11,10 @@ flask = "^3.0.0"
 openai = "^1.6.1"
 pydantic = "^2.5.3"
 pydantic-settings = "^2.1.0"
+pytest = "^7.4.4"
 
 [tool.poetry.group.dev.dependencies]
 #Linter and formatter
-flake8 = "^7.0.0"
-autopep8 = "^2.0.4"
 ruff = "^0.1.11"
 isort = "^5.13.2"
 pyright = "^1.1.345"

@@ -1,6 +1,8 @@
 from openai import OpenAI
-from Settings import settings
+from Settings import initialize_settings
+from utils.utils import parse_csv
 
+settings = initialize_settings()
 
 class openAi:
     def __init__(self, model="gpt-3.5-turbo", temperature=0.5, top_p=1):
@@ -44,4 +46,4 @@ class highlightExtractor(openAi):
             raise Exception("No response available. Please create a response first.")
 
         content = self.response.choices[0].message.content
-        return [highlight.strip() for highlight in content.split(";")]
+        return parse_csv(content)

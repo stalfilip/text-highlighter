@@ -1,3 +1,5 @@
+test:
+	poetry run pytest tests/ --cov=api --cov-report=term-missing
 
 lint:
 	poetry run ruff .

@@ -1,7 +1,7 @@
-from Settings import Settings
+from Settings import initialize_settings
 from text_enhancer import highlightExtractor
 
-settings = Settings()
+settings = initialize_settings()
 
 
 def main():
