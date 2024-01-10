@@ -1,7 +1,7 @@
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify, request
+from Settings import initialize_settings
 from text_enhancer import highlightExtractor
 from utils.utils import highlight_quotes
-from Settings import initialize_settings
 
 app = Flask(__name__)
 settings = initialize_settings()
