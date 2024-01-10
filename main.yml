@@ -1,0 +1,34 @@
+name: Lint
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ '*' ]
+
+jobs:
+  lint-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: pipx install poetry
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'poetry'
+          cache-dependency-path: backend/poetry.lock
+      - run: cd backend; poetry install
+      - run: cd backend; make lint
+
+  typecheck-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: pipx install poetry
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'poetry'
+          cache-dependency-path: backend/poetry.lock
+      - run: cd backend; poetry install
+      - run: cd backend; make typecheck

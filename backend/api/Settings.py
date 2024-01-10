@@ -1,4 +1,3 @@
-import os
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
@@ -6,6 +5,3 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
-
-# Skapa en instans av Settings-klassen
-settings = Settings()

@@ -1,6 +1,7 @@
 from openai import OpenAI
 from Settings import settings
 
+
 class openAi:
     def __init__(self, model="gpt-3.5-turbo", temperature=0.5, top_p=1):
         self.client = OpenAI(api_key=settings.OPENAI_API_KEY)
@@ -11,10 +12,7 @@ class openAi:
         self.top_p = top_p
 
     def add_message(self, role, content):
-        self.messages.append({
-            "role": role,
-            "content": content
-        })
+        self.messages.append({"role": role, "content": content})
 
     def create_response(self):
         self.response = self.client.chat.completions.create(
@@ -25,7 +23,8 @@ class openAi:
             top_p=self.top_p,
         )
 
-class KeywordExtractor(openAi):
+
+class highlightExtractor(openAi):
     def __init__(self, model="gpt-3.5-turbo", temperature=0.5, top_p=1):
         super().__init__(model, temperature, top_p)
 
@@ -37,7 +36,7 @@ class KeywordExtractor(openAi):
         """
         return instructions
 
-    def extract_keywords(self, text):
+    def extract_highlights(self, text):
         self.add_message("user", text)
         self.add_message("system", self.fetch_instructions())
         self.create_response()
@@ -45,6 +44,4 @@ class KeywordExtractor(openAi):
             raise Exception("No response available. Please create a response first.")
 
         content = self.response.choices[0].message.content
-        return [keyword.strip() for keyword in content.split(";")]
-
-
+        return [highlight.strip() for highlight in content.split(";")]
