@@ -16,6 +16,6 @@ jobs:
         with:
           python-version: "3.10"
           cache: "poetry"
-          cache-dependency-path: api/poetry.lock
-      - run: cd api; poetry install
-      - run: cd api; make test
+          cache-dependency-path: backend/poetry.lock
+      - run: cd backend; poetry install
+      - run: cd backend; make test
