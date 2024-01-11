@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Highlighter💡</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        #textInput {
+            width: 80vw; /* 80% of the viewport width */
+            height: 50vh; /* 30% of the viewport height */
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid black;
+            overflow: auto; /* Add a scrollbar if the content is too long */
+        }
+        #enlightenButton {
+            position: absolute; /* Position the button absolutely */
+            bottom: 10px; /* 10px from the bottom */
+            left: 10px; /* 10px from the left */
+            padding: 5px 10px; /* Adjust the padding to make the button smaller */
+            font-size: 14px; /* Adjust the font size to make the button smaller */
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div id="textInput" contenteditable="true"></div>
+        <br>
+        <button id="enlightenButton">Enlighten me 📖</button>
+    </div>
+
+    <script>
+        document.getElementById('enlightenButton').addEventListener('click', function() {
+            var input = document.getElementById('textInput').innerText;
+            console.log(input);
+            fetch('http://127.0.0.1:5000/ingest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text: input }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                var textDiv = document.getElementById('textInput');
+                textDiv.innerHTML = data.text;
+                stylizeMarkedText(textDiv);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    
+        function stylizeMarkedText(textDiv) {
+            var markedTexts = textDiv.querySelectorAll('mark');
+            markedTexts.forEach(function(mark) {
+                mark.style.backgroundColor = 'yellow';
+                mark.style.fontStyle = 'italic';
+            });
+        }
+    </script>
+</body>
+</html>

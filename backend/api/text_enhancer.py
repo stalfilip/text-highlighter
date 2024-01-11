@@ -1,6 +1,7 @@
 from openai import OpenAI
 from Settings import initialize_settings
-from utils.utils import parse_csv
+from utils.utils import parse_csv, count_words
+import openai
 
 settings = initialize_settings()
 
@@ -27,7 +28,7 @@ class openAi:
 
 
 class highlightExtractor(openAi):
-    def __init__(self, model="gpt-4-1106-preview", temperature=0.0, top_p=1):
+    def __init__(self, model="gpt-3.5-turbo", temperature=0.0, top_p=1):
         super().__init__(model, temperature, top_p)
 
     def fetch_instructions(self):
@@ -39,12 +40,22 @@ class highlightExtractor(openAi):
         return instructions
 
     def extract_highlights(self, text):
+        num_sentences = max(count_words(text) // 50, 1)
         self.add_message("user", text)
         self.add_message("system", self.fetch_instructions())
+        self.add_message("system", f"Look for 4 key sentences accross the whole text, from the start to the end.")
         self.add_message("system", "It's crucial that you cite the text exactly.")
-        self.create_response()
+        try:
+            self.create_response()
+        except openai.AuthenticationError as e:
+            raise openai.AuthenticationError(f"Authentication error: {e}")
+        except openai.RateLimitError as e:
+            raise openai.RateLimitError(f"Rate limit error: {e}")
+        except Exception as e:
+            raise Exception(f"Unexpected error: {e}")
+
         if self.response is None:
-            raise Exception("No response available. Please create a response first.")
+            raise Exception("No response available. Please try again.")
 
         content = self.response.choices[0].message.content
         return parse_csv(content)
