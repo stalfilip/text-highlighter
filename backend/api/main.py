@@ -1,26 +1,25 @@
-from flask import Flask, jsonify, request, make_response
+import logging
+
+import openai
+from flask import Flask, jsonify, make_response, request
 from flask_cors import CORS
 from Settings import initialize_settings
 from text_enhancer import highlightExtractor
 from utils.utils import highlight_quotes
-import openai
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 app = Flask(__name__)
 CORS(app)
 
 settings = initialize_settings()
 
-def run_highlighting(text):
+def run_highlighting(text: str) -> str:
     extractor = highlightExtractor()
-    extractor.add_message(
-        "system",
-        "You will be provided with a block of text, and your task is to extract a list of keywords from it.",
-    )
-    extractor.add_message("user", text)
-    sentences = extractor.extract_highlights(text)
-    print(f"nr of sentences: {len(sentences)}")
-    highlighted_text = highlight_quotes(text, sentences)
-    return highlighted_text
+    res = extractor.extract_highlights(text)
+    res = highlight_quotes(text, res)
+    return res
 
 @app.route('/ingest', methods=['POST'])
 def ingest():
@@ -28,6 +27,7 @@ def ingest():
         data = request.json
         text = data['text']
         result = run_highlighting(text)
+
         return jsonify({"text": result})
     except openai.AuthenticationError:
         return make_response(jsonify({"error": "Authentication error with OpenAI API"}), 401)

@@ -1,69 +1,45 @@
-from ..api.utils.utils import parse_csv, highlight_quotes, count_words
+import json
 
-
-def test_parse_content():
-    # Test with normal input
-    content = "highlight1; highlight2; highlight3"
-    expected_output = ['highlight1', 'highlight2', 'highlight3']
-    result = parse_csv(content)
-    assert result == expected_output, f"Expected {expected_output}, but got {result}"
-
-    # Test with leading and trailing spaces
-    content = " highlight1 ; highlight2 ; highlight3 "
-    expected_output = ['highlight1', 'highlight2', 'highlight3']
-    result = parse_csv(content)
-    assert result == expected_output, f"Expected {expected_output}, but got {result}"
-
-    # Test with empty string
-    content = ""
-    expected_output = ['']
-    result = parse_csv(content)
-    assert result == expected_output, f"Expected {expected_output}, but got {result}"
-
-    # Test with string containing only spaces
-    content = "   "
-    expected_output = ['']
-    result = parse_csv(content)
-    assert result == expected_output, f"Expected {expected_output}, but got {result}"
+from ..api.utils.utils import count_words, highlight_quotes
 
 
 def test_highlight_quotes():
     # Normal case
-    text = "This is a test string."
-    quotes = ["test"]
-    expected = "This is a <mark>test</mark> string."
-    assert highlight_quotes(text, quotes) == expected
+    text = "This is a quote1 string."
+    json_obj = json.loads('{"test": "quote1"}')
+    expected = "This is a <mark>quote1</mark> string."
+    assert highlight_quotes(text, json_obj) == expected
 
     # Multiple occurrences
-    text = "test test test."
-    quotes = ["test"]
-    res = highlight_quotes(text, quotes)
-    expected = "<mark>test</mark> <mark>test</mark> <mark>test</mark>."
+    text = "quote1 quote1 quote1."
+    json_obj = json.loads('{"test": "quote1"}')
+    res = highlight_quotes(text, json_obj)
+    expected = "<mark>quote1</mark> <mark>quote1</mark> <mark>quote1</mark>."
     assert res == expected
 
-    # Multiple quotes
+    # Value not in text
     text = "This is a test string."
-    quotes = ["This", "test"]
-    expected = "<mark>This</mark> is a <mark>test</mark> string."
-    assert highlight_quotes(text, quotes) == expected
-
-    # No quotes in text
-    text = "This is a test string."
-    quotes = ["not in text"]
+    json_obj = json.loads('{"test": "not in text"}')
     expected = "This is a test string."
-    assert highlight_quotes(text, quotes) == expected
-
-    # Empty quotes
-    text = "This is a test string."
-    quotes = [""]
-    expected = "This is a test string."
-    assert highlight_quotes(text, quotes) == expected
+    assert highlight_quotes(text, json_obj) == expected
 
     # Empty text
     text = ""
-    quotes = ["test"]
+    json_obj = json.loads('{"test": "quote1"}')
     expected = ""
-    assert highlight_quotes(text, quotes) == expected
+    assert highlight_quotes(text, json_obj) == expected
+
+    # Empty JSON object
+    text = "This is a test string."
+    json_obj = json.loads('{}')
+    expected = "This is a test string."
+    assert highlight_quotes(text, json_obj) == expected
+
+    # JSON object with empty value
+    text = "This is a test string."
+    json_obj = json.loads('{"test": ""}')
+    expected = "This is a test string."
+    assert highlight_quotes(text, json_obj) == expected
 
 def test_count_words():
     # Normal case

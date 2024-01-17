@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  app:
+    build: ./app
+    ports:
+      - "3000:3000" # Change the ports as per your Node.js app's requirements
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    env_file:
+      - ./backend/.env  # Path to your .env file
+    ports:
+      - "5000:5000" # Assuming the Python backend runs on port 5000
