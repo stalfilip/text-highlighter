@@ -1,11 +1,13 @@
 # Text-highlighter
 
 ## Description
+Text-highlighter app! Takes your text and highlights the important parts :) 
 
-This project consists of a backend developed with Flask and a frontend developed with JavaScript. The project is containerized using Docker, which simplifies the setup and running of the project.
+Consists of a backend developed with Flask and a frontend developed with JavaScript. The project is containerized using Docker, which simplifies the setup and running of the project.
 
 
 ## Setup
+
 
 To set up and run the project, follow these steps:
 
